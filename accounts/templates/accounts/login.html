@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load staticfiles %}
+
+
+
+
+<style>
+.form-body {
+  display: -ms-flexbox;
+  display: flex;
+  align-items: center;
+}
+
+.form-signin {
+  width: 100%;
+  max-width: 330px;
+  padding: 15px;
+  margin: auto;
+}
+.form-signin .checkbox {
+  font-weight: 400;
+}
+.form-signin .form-control {
+  position: relative;
+  box-sizing: border-box;
+  height: auto;
+  padding: 10px;
+  font-size: 16px;
+}
+.form-signin .form-control:focus {
+  z-index: 2;
+}
+.form-signin input[type="text"] {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.form-signin input[type="password"] {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+</style>
+
+<div class="form-body align-items-center justify-content-center">
+  <form class="form-signin" method="POST" action="{% url 'login' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    {% if error %}
+    {{ error }}
+    <br />
+    <br />
+    {% endif %}
+
+    <h1 class="h3 mb-4 font-weight-normal text-center mt-5">Please sign in</h1>
+
+    <label for="inputText" class="sr-only">Username</label>
+    <input type="text" name="username" class="form-control" placeholder="Username" required autofocus>
+
+    <label for="inputPassword" class="sr-only">Password</label>
+    <input type="password" name="password" class="form-control" placeholder="Password" required>
+
+    <div class="checkbox mb-3 pt-2">
+      <label>
+        <input type="checkbox" value="remember-me"> Remember me
+      </label>
+    </div>
+
+    <button class="btn btn-lg btn-primary btn-block mb-3" type="submit">Sign in</button>
+    <br />
+
+    <div class="row">
+      <div class="col-md-4">
+        <a href="{% url 'social:begin' 'github' %}"><img src="{% static 'github.png' %}"></a>
+      </div>
+      <div class="col-md-4">
+        <a href="{% url 'social:begin' 'twitter' %}"><img src="{% static 'twitter.png' %}"></a>
+      </div>
+      <div class="col-md-4">
+        <a href="{% url 'social:begin' 'facebook' %}"><img src="{% static 'facebook.png' %}"></a>
+      </div>
+    </div>
+
+
+    <p class="mt-5 mb-3 text-muted">&copy; {% now "Y" %}</p>
+
+  </form>
+
+</div>
+{% endblock %}

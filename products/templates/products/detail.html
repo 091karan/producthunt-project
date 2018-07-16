@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% load staticfiles %}
+<link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah" rel="stylesheet">
+
+<style>
+
+  a {
+    text-decoration: none !important;
+  }
+
+  .commentform{
+    display: -ms-flexbox;
+    display: flex;
+  }
+
+    .modal-dialog {
+    margin-top: 0;
+    margin-bottom: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .modal.fade .modal-dialog {
+    transform: translate(0, -100%);
+  }
+
+  .modal.in .modal-dialog {
+    transform: translate(0, 0);
+  }
+</style>
+<div class="container" style="background-color:#ffffff;">
+  <div class="row">
+    <div class="col-1">
+      <img src="{{ product.icon.url }}" height="85px" width="85px" class="img-fluid pt-3"/>
+    </div>
+
+    <div class="col-10">
+      <a href="{{ product.url }}"><h1 class="pt-3">{{ product.title }}</h1></a>
+    </div>
+  </div>
+
+  <br />
+
+  <div class="row">
+    <div class="col-8">
+      <img src="{{ product.image.url }}" height="100%" width="100%" class="img-fluid" />
+    </div>
+
+    <div class="col-4">
+      <a href="javascript:{document.getElementById('upvote').submit()}">
+        <button class="btn btn-block btn-primary btn-lg"><span class="oi oi-caret-top"></span> Upvote {{ product.count }}</button>
+      </a>
+    </div>
+  </div>
+
+  <div class="row pt-2">
+    <div class="col-4">
+      <h4><span class="oi oi-magnifying-glass"></span> Haunted By {{ product.hunter.username }}</h4>
+    </div>
+
+    <div class="col-4 text-right">
+      <h4><span class="oi oi-clock"></span> {{ product.pub_date_preety }}</h4>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-8">
+      <p class="lead">{{ product.body }}</p>
+    </div>
+  </div>
+
+  <form id="upvote" method="POST" action="{% url 'upvote' product.id %}">
+    {% csrf_token %}
+    <input type="hidden">
+  </form>
+</div>
+
+<br />
+
+<div class="container">
+  <h5>Reviews</h5>
+  <br />
+
+<div class="row">
+  <div class="col-8">
+    <div class="container" style="background-color:#ffffff;">
+      {% for comment in comments.all %}
+          <div class="col-8" style="max-width:800px !important;">
+            <div class="row">
+              <div class="col-md-">
+                {% if comment.commented_user.profile.photo %}
+                  <img src="{{ comment.commented_user.profile.photo.url }}" class="mt-3" height="50px" width="50px" style="border-radius:50%;">
+                {% else %}
+                  <img src="{% static 'anymonous.png' %}" class="mt-3" height="50px" width="50px" style="border-radius:50%;">
+                {% endif %}
+              </div>
+
+              <div class="font-weight-bold pl-3 pt-3"
+                style="text-decoration:None; color:black; font-size:18px;" >
+                {% if comment.commented_user.first_name and comment.commented_user.last_name %}
+                  {{ comment.commented_user.first_name }} {{ comment.commented_user.last_name }}
+                {% else %}
+                  {{ comment.commented_user }}
+                {% endif %}
+                <br />
+                <p style="font-family: 'Gloria Hallelujah', cursive; font-weight:100; color:#8c8c8c; font-size:14px;">
+                  {% if comment.commented_user.profile.bio %}
+                    @{{ comment.commented_user }}-{{ comment.commented_user.profile.bio }}
+                  {% else %}
+                    @{{ comment.commented_user }}
+                  {% endif %}
+                </p>
+              </div>
+
+            </div>
+            <p class="lead pl-5">{{ comment.body }}</p>
+          </div>
+          <hr />
+
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="col-4">
+    <!-- Button to Open the Modal -->
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+      Comment
+    </button>
+
+    <!-- The Modal -->
+    <div class="modal" id="myModal">
+      <div class="modal-dialog modalheight">
+        <div class="modal-content">
+          <!-- Modal body -->
+          <div class="modal-body">
+            <form class="commentform" id="commentit" method="POST" action="{% url 'comment' product.id %}">
+              {% csrf_token %}
+              <textarea rows='10' cols='1000' placeholder='Comment..' name='body'></textarea>
+            </form>
+          </div>
+
+          <!-- Modal footer -->
+          <div class="modal-footer">
+            <a href="javascript:{document.getElementById('commentit').submit()}">
+              <button class="btn btn-block btn-success">Post</button>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
